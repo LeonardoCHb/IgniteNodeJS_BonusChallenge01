@@ -10,11 +10,27 @@ app.use(cors());
 const users = [];
 
 function checksExistsUserAccount(request, response, next) {
-  // Complete aqui
+  const { username } = request.headers
+
+  const user = users.find((user) => user.username === username)
+
+  if(!user){
+    return response.status(404).json({erro: "username not found!"})
+  }
+
+  request.user = user
+
+  return next()
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  const { user } = request;
+
+  if(!(user.pro) && user.todos.lenght > 10){
+    return response.status(403).json({erro:"Seu limite de todos foi ultrapassado! Considere se tornar pro"})
+  }
+
+  return next()
 }
 
 function checksTodoExists(request, response, next) {
